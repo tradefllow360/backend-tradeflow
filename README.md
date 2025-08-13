@@ -1,0 +1,1 @@
+# storemind-inventory-service
