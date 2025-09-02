@@ -5,30 +5,33 @@ import { EmpresaEntity } from './empresa.schema';
 import { RoleEntity } from './role.schema';
 
 @Schema({ timestamps: { createdAt: 'fecha_creacion' } })
-export class UserEntity extends Document {
-  declare _id: Types.ObjectId;
+export class UserEntity {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'EmpresaEntity', required: true })
-  empresa: EmpresaEntity ;
+  empresa: Types.ObjectId | EmpresaEntity;
 
-  @Prop({ required: true, type: String })
+  @Prop({ required: true })
   nombre: string;
 
-  @Prop({ required: true, type: String })
+  @Prop({ required: true })
   email: string;
 
-  @Prop({ required: true, type: String })
+  @Prop({ required: true })
   password_hash: string;
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'RoleEntity', required: true })
-  rol: RoleEntity;
+  rol: Types.ObjectId | RoleEntity;
 
-  @Prop({ default: true, type: Boolean })
+  @Prop({ default: true })
   activo: boolean;
-  
+
   @Prop({ type: Date, nullable: true })
   ultimo_login: Date;
+
+  _id: any;
 }
 
+export type UserDocument = UserEntity & Document;
 export const UserSchema = SchemaFactory.createForClass(UserEntity);
-// Índice compuesto para asegurar que el email sea único por empresa
+
+// índice compuesto
 UserSchema.index({ empresa: 1, email: 1 }, { unique: true });

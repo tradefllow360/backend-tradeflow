@@ -8,15 +8,27 @@ import { CreateUserDto } from 'src/users/application/dtos/create-user.dto';
 import { CreateRoleDto } from 'src/users/application/dtos/create-role.dto';
 import { UpdateUserDto } from 'src/users/application/dtos/update-user.dto';
 import { RegisterEmpresaDto, LoginDto } from 'src/users/application/dtos/auth-requests.dto';
+import { Empresa } from '../../models/empresa.model';
+import { LoginModel } from '../../models/login.model';
 
 
 export abstract class UsuariosUseCasePort {
-  abstract registerEmpresa(data: RegisterEmpresaDto): Promise<{ user: User; token: string }>;
-  abstract registerUser(data: CreateUserDto): Promise<User>;
-  abstract login(credentials: LoginDto): Promise<{ user: User; token: string } | null>;
+  abstract registerEmpresa(
+    empresa: Empresa,
+    adminUser: User
+  ): Promise<{ user: User; token: string }>;
+
+  abstract registerUser(user: User): Promise<User>;
+
+  abstract login(credentials: LoginModel): Promise<{ user: User; token: string } | null>;
+
   abstract getUserProfile(id: string): Promise<User | null>;
-  abstract updateUser(id: string, data: UpdateUserDto): Promise<User | null>;
+
+  abstract updateUser(user: User): Promise<User | null>;
+
   abstract deleteUser(id: string): Promise<boolean>;
-  abstract createRoles(roles: CreateRoleDto[]): Promise<Role[]>;
+
+  abstract createRoles(roles: Role[]): Promise<Role[]>;
+
   abstract listRoles(): Promise<Role[]>;
 }

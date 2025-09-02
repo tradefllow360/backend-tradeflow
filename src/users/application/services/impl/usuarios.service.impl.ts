@@ -1,4 +1,5 @@
 // src/usuarios/application/services/impl/usuarios.service.impl.ts
+// src/usuarios/application/services/impl/usuarios.service.impl.ts
 import { Inject, Injectable } from '@nestjs/common';
 import { UsuariosService } from '../usuarios.service';
 import { UsuariosUseCasePort } from '../../../domain/ports/in/usuarios.usecase.port';
@@ -6,6 +7,10 @@ import { RegisterEmpresaDto, LoginDto } from '../../dtos/auth-requests.dto';
 import { CreateUserDto } from '../../dtos/create-user.dto';
 import { UpdateUserDto } from '../../dtos/update-user.dto';
 import { CreateRoleDto } from '../../dtos/create-role.dto';
+
+import { UserMapper } from '../../mappers/user.mapper';
+import { EmpresaMapper } from '../../mappers/empresa.mapper';
+import { RoleMapper } from '../../mappers/role.mapper';
 
 @Injectable()
 export class UsuariosServiceImpl implements UsuariosService {
@@ -15,32 +20,36 @@ export class UsuariosServiceImpl implements UsuariosService {
   ) {}
 
   registerEmpresa(data: RegisterEmpresaDto) {
-    return this.userUseCase.registerEmpresa(data);
+    const { empresa, adminUser } = EmpresaMapper.fromRegisterEmpresaDto(data);
+    return this.userUseCase.registerEmpresa(empresa, adminUser);
   }
 
   registerUser(data: CreateUserDto) {
-    //mapeo 
-    return this.userUseCase.registerUser(data);
+    const user = UserMapper.fromCreateUserDto(data);
+    return this.userUseCase.registerUser(user);
   }
 
   login(credentials: LoginDto) {
-    return this.userUseCase.login(credentials);
+    const loginModel = UserMapper.fromLoginDto(credentials);
+    return this.userUseCase.login(loginModel);
   }
 
   getUserProfile(id: string) {
     return this.userUseCase.getUserProfile(id);
   }
-  
+
   updateUser(id: string, data: UpdateUserDto) {
-      return this.userUseCase.updateUser(id, data);
+    const user = UserMapper.fromUpdateUserDto(data, id);
+    return this.userUseCase.updateUser(user);
   }
 
   deleteUser(id: string) {
-      return this.userUseCase.deleteUser(id);
+    return this.userUseCase.deleteUser(id);
   }
 
   createRoles(roles: CreateRoleDto[]) {
-      return this.userUseCase.createRoles(roles);
+    const roleModels = RoleMapper.fromCreateRoleDtos(roles);
+    return this.userUseCase.createRoles(roleModels);
   }
 
   listRoles() {

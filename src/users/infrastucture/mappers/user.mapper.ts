@@ -22,13 +22,13 @@ entityToModel(entity: UserEntity): User {
   if (entity.empresa && entity.empresa instanceof EmpresaEntity) {
     user.empresa = this.empresaEntityToModel(entity.empresa);
   } else {
-    user.empresa = entity.empresa;
+    user.empresa = entity.empresa.toString();
   }
 
   if (entity.rol && entity.rol instanceof RoleEntity) {
     user.rol = this.roleEntityToModel(entity.rol);
   } else {
-    user.rol = entity.rol;
+    user.rol = entity.rol.toString();
   }
 
   return user;

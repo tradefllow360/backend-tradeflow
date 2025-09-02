@@ -38,9 +38,6 @@ export class UsuariosPersistenceAdapter implements UsuariosPersistencePort {
   }
 
   async saveUser(user: Partial<User>): Promise<User> {
-    // Aquí se debería convertir el modelo de dominio a entidad antes de guardar
-    // Por simplicidad, pasamos el objeto directamente asumiendo compatibilidad
-    console.log(user)
     const empresaEntity =await this.repository.findByIdEmpresa(user.empresa?.toString() || '');
     const roleEntity = await this.repository.findByIdRole(user.rol?.toString() || '');
 
@@ -56,10 +53,10 @@ export class UsuariosPersistenceAdapter implements UsuariosPersistencePort {
     userEntity.password_hash = user.password_hash || '';
     userEntity.empresa = empresaEntity;
     userEntity.rol = roleEntity;
-    userEntity.activo = user.activo || false;
-    userEntity.ultimo_login = user.ultimo_login || new Date();
+    userEntity.activo = user.activo ?? true;
+    userEntity.ultimo_login = new Date();
 
-    const newUserEntity = await this.repository.create(user as any);
+    const newUserEntity = await this.repository.create(userEntity);
     if(!newUserEntity){
       return new User;
     }

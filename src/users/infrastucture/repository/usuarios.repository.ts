@@ -25,7 +25,7 @@ export class UsuariosRepository {
   }
 
   async create(user: Partial<UserEntity>, session?: ClientSession): Promise<UserEntity> {
- 
+    console.log(user)
     const newUser = new this.userModel(user);
     return newUser.save({ session });
   }
